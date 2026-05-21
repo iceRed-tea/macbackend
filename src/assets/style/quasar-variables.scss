@@ -1,0 +1,111 @@
+// Quasar SCSS (& Sass) Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+
+// Check documentation for full list of Quasar variables
+
+// Your own variables (that are declared here) and Quasar's own
+// ones will be available out of the box in your .vue/.scss/.sass files
+
+// It's highly recommended to change the default colors
+// to match your app's branding.
+// Tip: Use the "Theme Builder" on Quasar's documentation website.
+
+$primary: #1677ff;
+$secondary: #26a69a;
+$accent: #9c27b0;
+
+$dark: #1d1d1d;
+$dark-page: #121212;
+
+$positive: #21ba45;
+$negative: #c10015;
+$info: #31ccec;
+$warning: #f2c037;
+
+// 全局通知样式
+.q-notification {
+    border-radius: 20px;
+    margin-top: 30px;
+    min-height: 38px !important;
+    i {
+        font-size: 18px !important;
+    }
+}
+
+// 统一弹窗圆角
+.q-dialog-plugin{
+    border-radius: 15px !important;
+    button{
+        min-height: 30px !important;
+        &:last-child{
+            background: $primary;
+            color: #fff !important;
+            font-size: 12px !important;
+        }
+    }
+    .q-dialog__title{
+        font-size: 16px !important;
+    }
+    .q-dialog__message{
+        font-size: 14px !important;
+    }
+    button{
+        border-radius: 20px;
+    }
+}
+
+.q-dialog{
+    z-index: 1000;
+    // .q-dialog__backdrop{
+    //     z-index: 10000;
+    // }
+}
+
+.q-dialog__title {
+    font-weight: bold;
+    font-size: 1.15em;
+}
+
+.q-btn{
+    .bootstrap-icons{
+        font-size: 1.2em !important;
+    }
+}
+
+.scroll-bar{
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.12);
+        border-radius: 4px;
+        &:hover {
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+    }
+}
+
+// Gap 工具类 1-100px
+@for $i from 1 through 100 {
+    .gap-#{$i} {
+        gap: #{$i}px;
+    }
+}
+
+// flex 工具类 1-100
+@for $i from 1 through 100 {
+    .flex-#{$i} {
+        flex: #{$i};
+    }
+}
+
+.q-notifications__list{
+    top: 15px;
+}
+

@@ -1,0 +1,26 @@
+// 饿了么样式
+
+.el-popper {
+    border-radius: 15px !important;
+    & > div {
+        border-radius: 15px !important;
+        overflow: hidden;
+    }
+}
+
+.el-message-box {
+    border-radius: 15px !important;
+    button{
+        border-radius: 20px !important;
+    }
+}
+
+.el-notification {
+    margin-top: 40px;
+}
+
+.el-table{
+    th{
+        color:#414141;
+    }
+}
