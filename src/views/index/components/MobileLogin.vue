@@ -1,4 +1,6 @@
 <script setup>
+const router = useRouter();
+
 const form = reactive({
     name: '',
     password: '',
@@ -31,7 +33,9 @@ const getCode = () => {
 };
 
 function loginFun() {
-    console.log('loginFun');
+    setTimeout(() => {
+        router.replace('/os');
+    }, 2500);
 }
 </script>
 

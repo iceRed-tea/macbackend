@@ -9,6 +9,7 @@ const tab = ref('first');
 const second = ref(60);
 let timer = null;
 const now = ref(new Date().getFullYear());
+const loading = ref(false);
 
 onBeforeUnmount(() => {
     clearInterval(timer);
@@ -33,7 +34,11 @@ const getCode = () => {
 };
 
 function loginFun() {
-    console.log('loginFun');
+    loading.value = true;
+    setTimeout(() => {
+        loading.value = false;
+        router.replace('/os');
+    }, 2500);
 }
 </script>
 
@@ -108,7 +113,14 @@ function loginFun() {
                                 </el-button>
                             </template>
                         </q-input>
-                        <q-btn label="登录" rounded unelevated color="primary" type="submit" />
+                        <q-btn
+                            label="登录"
+                            rounded
+                            unelevated
+                            color="primary"
+                            type="submit"
+                            :loading="loading"
+                        />
                         <div class="row orther">
                             <q-icon name="bi-tencent-qq" color="black">
                                 <q-tooltip>QQ登录</q-tooltip>
@@ -141,7 +153,7 @@ function loginFun() {
     max-width: 1000px;
     min-width: 800px;
     padding-bottom: 12px;
-    animation: login_card_animation 1s ease-in-out forwards;
+    animation: login_card_animation 1s ease forwards;
     @keyframes login_card_animation {
         from {
             opacity: 0;
