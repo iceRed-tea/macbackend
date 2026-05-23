@@ -45,6 +45,8 @@ export function buildMacWinboxOptions(win) {
     return {
         ...user,
         id: user.id ?? `app-win-${win.id}`,
+        appName: win.appName,
+        launchOrigin: win.launchOrigin,
         class: mergeClass('macos', 'no-full', user.class),
         template: user.template ?? createMacTemplate(),
         background: user.background ?? 'transparent',

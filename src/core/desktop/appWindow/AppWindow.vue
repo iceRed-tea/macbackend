@@ -1,11 +1,10 @@
 <script setup>
-import VueWinBox from 'vue-winbox';
-import 'winbox/dist/css/winbox.min.css';
+import Window from './wegits/Window.vue';
 import './winbox-os.scss';
 import { buildMacWinboxOptions } from './macWinboxOptions';
 import useAppStore from '@/store/useAppStore';
 
-const { windows, windowSize } = storeToRefs(useAppStore());
+const { windows } = storeToRefs(useAppStore());
 
 function removeWindowById(id) {
     const index = windows.value.findIndex(w => w.id === id);
@@ -15,15 +14,7 @@ function removeWindowById(id) {
 }
 
 function getOptions(win) {
-    return {
-        ...buildMacWinboxOptions(win),
-        onclose() {
-            removeWindowById(win.id);
-        },
-        onmove(x, y) {
-            console.log(x, y);
-        },
-    };
+    return buildMacWinboxOptions(win);
 }
 
 function onWindowClose(id) {
@@ -32,12 +23,12 @@ function onWindowClose(id) {
 </script>
 
 <template>
-    <VueWinBox
+    <Window
         v-for="win in windows"
         :key="win.id"
         :options="getOptions(win)"
         @close="onWindowClose(win.id)"
     >
         <component :is="win.component" :window-data="win.data" />
-    </VueWinBox>
+    </Window>
 </template>

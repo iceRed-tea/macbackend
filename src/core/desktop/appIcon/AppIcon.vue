@@ -9,6 +9,12 @@ const props = defineProps({
         required: true,
     },
 });
+
+const emit = defineEmits(['open']);
+
+function onClick(event) {
+    emit('open', props.app, event);
+}
 </script>
 
 <template>
@@ -16,6 +22,7 @@ const props = defineProps({
         class="app_icon_wrap"
         :style="{ animationDelay: `${index * 0.1 + 0.2}s` }"
         :title="app.meta.title"
+        @click="onClick"
     >
         <div class="app_icon">
             <img v-if="app.meta.icon.includes('http')" :src="app.meta.icon" alt="app icon" />
@@ -27,7 +34,7 @@ const props = defineProps({
 
 <style scoped lang="scss">
 /* 外层：入场动画（forwards 会锁定 transform，不能和 hover 写在同一元素） */
-.app_icon_wrap {
+    .app_icon_wrap {
     flex: 0 0 17.5%;
     width: 17.5%;
     max-width: 60px;
@@ -35,6 +42,7 @@ const props = defineProps({
     opacity: 0;
     animation: app-icon-enter 1s ease forwards;
     position: relative;
+    cursor: pointer;
     .app_icon_title {
         position: absolute;
         bottom: -45%;

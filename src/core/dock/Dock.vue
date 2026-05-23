@@ -5,7 +5,7 @@ const { windows } = storeToRefs(useAppStore());
 
 <template>
     <div class="dock">
-        <div class="dock-item" v-for="win in windows" :key="win.id">
+        <div class="dock-item" v-for="win in windows" :key="win.id" :data-app-name="win.appName">
             <div class="dock-item-icon">
                 <img :src="win.icon" alt="app icon" />
             </div>

@@ -24,11 +24,29 @@ function findWindowByAppName(name) {
     return windows.value.find(win => win.appName === name);
 }
 
-function createWindowByApp(app) {
+function getLaunchOrigin(event) {
+    const el = event?.currentTarget?.querySelector?.('.app_icon') ?? event?.currentTarget;
+    if (!el) return null;
+
+    const rect = el.getBoundingClientRect();
+    return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+        width: rect.width,
+        height: rect.height,
+        borderRadius: 15,
+    };
+}
+
+function createWindowByApp(app, launchOrigin) {
+    const icon = app.meta?.icon;
     windows.value.push({
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         appName: app.name,
-        component: defineAsyncComponent(app.component),
+        title: app.meta?.title || app.name,
+        icon: typeof icon === 'string' && icon.includes('http') ? icon : '',
+        launchOrigin,
+        component: markRaw(defineAsyncComponent(app.component)),
         options: {
             title: app.meta?.title || app.name,
             width: '80%',
@@ -39,7 +57,7 @@ function createWindowByApp(app) {
     });
 }
 
-function openAppWindow(app) {
+function openAppWindow(app, event) {
     if (!app?.component) return;
 
     const exists = findWindowByAppName(app.name);
@@ -53,18 +71,18 @@ function openAppWindow(app) {
         return;
     }
 
-    createWindowByApp(app);
+    createWindowByApp(app, getLaunchOrigin(event));
 }
 
-function onAppClick(app) {
-    openAppWindow(app);
+function onAppOpen(app, event) {
+    openAppWindow(app, event);
 }
 </script>
 
 <template>
     <div class="desktop" :style="{ padding: padding }">
         <template v-for="(app, index) in appList" :key="app.name">
-            <AppIcon :app="app" :index="index" @click="onAppClick(app)" />
+            <AppIcon :app="app" :index="index" @open="onAppOpen" />
         </template>
     </div>
 

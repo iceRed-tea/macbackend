@@ -1,5 +1,9 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import autoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { QuasarResolver, ElementPlusResolver } from 'unplugin-vue-components/resolvers';
@@ -19,9 +23,13 @@ export default defineConfig({
         quasar({ sassVariables: '@/assets/style/quasar-variables.scss' }),
     ],
     resolve: {
-        alias: {
-            '@': '/src',
-        },
+        alias: [
+            { find: '@', replacement: '/src' },
+            {
+                find: /^winbox$/,
+                replacement: path.resolve(__dirname, 'packages/winbox/src/js/winbox.js'),
+            },
+        ],
     },
     base: '/',
     server: {
