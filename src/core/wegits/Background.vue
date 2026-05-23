@@ -22,6 +22,7 @@ const { config } = storeToRefs(useAppStore());
     left: 0;
     width: 100%;
     height: 100%;
+    pointer-events: none;
     animation: background-animation 1.5s ease forwards;
     @keyframes background-animation {
         from {

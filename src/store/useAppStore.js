@@ -4,10 +4,12 @@ import HeroImg from '@/assets/images/os/hero.jpg';
 const useAppStore = defineStore(
     'app',
     () => {
+        // 窗口大小
         const windowSize = ref({
-            width: 0,
-            height: 0,
+            width: 1980,
+            height: 1080,
         });
+        // 配置
         const config = ref({
             background: {
                 url: HeroImg,
@@ -15,9 +17,12 @@ const useAppStore = defineStore(
                 brightness: 1,
             },
         });
+        // 窗口列表
+        const windows = ref([]);
         return {
             windowSize,
             config,
+            windows,
         };
     },
     {
