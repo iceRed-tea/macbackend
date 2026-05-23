@@ -5,7 +5,7 @@ const CLOSE_DURATION = 420;
 /** 开/关动画全程保持圆角，与桌面图标一致 */
 export const WINDOW_RADIUS = 15;
 const MIN_SCALE = 0.001;
-const MAX_VISUAL_RADIUS_RATIO = 0.25;
+const MAX_VISUAL_RADIUS_RATIO = 0.15;
 
 function originToRect(origin) {
     const w = origin.width ?? 56;
@@ -31,7 +31,7 @@ function getCompensatedRadius(dom, radius, scaleX = 1, scaleY = scaleX) {
     const visualRadius = Math.min(
         radius,
         visualWidth * MAX_VISUAL_RADIUS_RATIO,
-        visualHeight * MAX_VISUAL_RADIUS_RATIO,
+        visualHeight * MAX_VISUAL_RADIUS_RATIO
     );
     const rx = toPx(visualRadius / sx);
     const ry = toPx(visualRadius / sy);

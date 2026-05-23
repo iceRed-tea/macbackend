@@ -49,8 +49,8 @@ function createWindowByApp(app, launchOrigin) {
         component: markRaw(defineAsyncComponent(app.component)),
         options: {
             title: app.meta?.title || app.name,
-            width: '80%',
-            height: '80%',
+            width: '70%',
+            height: '70%',
             x: 'center',
             y: 'center',
         },

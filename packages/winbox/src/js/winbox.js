@@ -1111,8 +1111,8 @@ WinBox.prototype.move = function (x, y, _skip_update) {
     setStyle(this.dom, 'left', x + 'px');
     setStyle(this.dom, 'top', y + 'px');
 
-    const w = this.max ? this.dom.offsetWidth : (this.width ?? this.dom.offsetWidth);
-    const h = this.max ? this.dom.offsetHeight : (this.height ?? this.dom.offsetHeight);
+    const w = this.max ? this.dom.offsetWidth : this.width ?? this.dom.offsetWidth;
+    const h = this.max ? this.dom.offsetHeight : this.height ?? this.dom.offsetHeight;
 
     this.onmove && this.onmove(x, y, w, h);
     return this;

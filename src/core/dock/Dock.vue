@@ -20,12 +20,11 @@ const { windows } = storeToRefs(useAppStore());
 .dock {
     position: absolute;
     left: 50%;
-    bottom: -5rem;
+    bottom: 3rem;
     min-width: 300px;
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 5rem, 0);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     z-index: 10;
-    transition: transform 1s 0.8s cubic-bezier(0.25, 1, 0.5, 1);
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(20px) saturate(180%);
     border-radius: 24px;
@@ -41,7 +40,8 @@ const { windows } = storeToRefs(useAppStore());
         height: 60px;
         max-width: 60px;
         align-self: flex-start;
-        animation: dock-item-animation 1s ease forwards;
+        animation: dock-item-animation 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        will-change: transform, opacity;
         /* 核心：半透明 + 模糊 + 饱和 */
         background: rgba(255, 255, 255, 0.18);
         backdrop-filter: blur(18px) saturate(170%);
@@ -52,7 +52,28 @@ const { windows } = storeToRefs(useAppStore());
         /* 双层阴影：外深内亮 */
         box-shadow: 0 8px 32px rgba(31, 38, 135, 0.25), inset 0 4px 20px rgba(255, 255, 255, 0.35);
         border-radius: 15px;
-        transition: all 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        @keyframes dock-item-animation {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, 18px, 0) scale(0.86);
+            }
+            55% {
+                opacity: 1;
+                transform: translate3d(0, -10px, 0) scale(1.008);
+            }
+            75% {
+                transform: translate3d(0, 4px, 0) scale(0.98);
+            }
+            90% {
+                transform: translate3d(0, -2px, 0) scale(1.002);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+        }
         &:hover {
             transform: translateY(-1px);
             box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
@@ -63,11 +84,11 @@ const { windows } = storeToRefs(useAppStore());
     @keyframes dock-animation {
         from {
             opacity: 0.5;
-            bottom: -5rem;
+            transform: translate3d(-50%, 5rem, 0);
         }
         to {
             opacity: 1;
-            bottom: 3rem;
+            transform: translate3d(-50%, 0, 0);
         }
     }
 }

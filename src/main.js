@@ -12,4 +12,4 @@ const app = createApp(App);
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
-app.use(quasar).use(router).use(pinia).mount('#app');
+app.use(pinia).use(quasar).use(router).mount('#app');
