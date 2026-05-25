@@ -23,6 +23,7 @@
 .winbox{
     border-radius: 15px;
     overflow: hidden;
+    transition: width 0.25s, height 0.25s, left 0.25s, top 0.25s;
     .wb-body{
         border-radius: 0 0 15px 15px;
     }
@@ -76,6 +77,9 @@
             line-height: 35px;
             cursor: default;
         }
+        .wb-icon{
+            display: none !important;
+        }
     }
 }
 
@@ -87,4 +91,50 @@
     .wb-body{
         border-radius: 0;
     }
+}
+
+.winbox.dock-minimized {
+    z-index: 10 !important;
+    border-radius: 15px;
+    overflow: hidden;
+    aspect-ratio: 1/1 !important;
+    height: auto !important;
+    box-shadow: none;
+
+    .wb-header {
+        height: 100%;
+        border-radius: 15px;
+        padding: 0;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(18px) saturate(170%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+       
+        .wb-control{
+            display: none;
+        }
+        .wb-drag{
+            padding-left: 0;
+            .wb-title{
+                display: none;
+            }
+            .wb-icon{
+                display: block !important;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                background-size: cover;
+                border-radius: 15px;
+                &:hover {
+                    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+                    cursor: pointer !important;
+                }
+            }
+        }
+    }
+
+    .wb-title {
+        opacity: 0;
+    }
+  
+   
 }

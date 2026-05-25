@@ -39,16 +39,17 @@ function getLaunchOrigin(event) {
 }
 
 function createWindowByApp(app, launchOrigin) {
-    const icon = app.meta?.icon;
     windows.value.push({
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         appName: app.name,
         title: app.meta?.title || app.name,
-        icon: typeof icon === 'string' && icon.includes('http') ? icon : '',
+        icon: app.meta?.icon,
+        focused: false,
         launchOrigin,
         component: markRaw(defineAsyncComponent(app.component)),
         options: {
             title: app.meta?.title || app.name,
+            icon: app.meta?.icon,
             width: '70%',
             height: '70%',
             x: 'center',

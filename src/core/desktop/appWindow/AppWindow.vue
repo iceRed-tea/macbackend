@@ -17,6 +17,16 @@ function getOptions(win) {
     return buildMacWinboxOptions(win);
 }
 
+function onWindowCreated(win, instance) {
+    win.instance = markRaw(instance);
+}
+
+function onWindowFocus(win) {
+    windows.value.forEach(w => {
+        w.focused = w.id === win.id;
+    });
+}
+
 function onWindowClose(id) {
     removeWindowById(id);
 }
@@ -27,6 +37,8 @@ function onWindowClose(id) {
         v-for="win in windows"
         :key="win.id"
         :options="getOptions(win)"
+        @created="onWindowCreated(win, $event)"
+        @focus="onWindowFocus(win)"
         @close="onWindowClose(win.id)"
     >
         <component :is="win.component" :window-data="win.data" />

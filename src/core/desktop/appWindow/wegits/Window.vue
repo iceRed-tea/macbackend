@@ -1,3 +1,56 @@
+<script>
+const dockMinimizedWindows = new Map();
+let dockMinimizedRaf = 0;
+
+function placeMinimizedInDock(winbox, appName) {
+    if (!winbox?.dom || !appName || !winbox.min) return;
+
+    const dockItem = document.querySelector(`.dock-item[data-app-name="${CSS.escape(appName)}"]`);
+    if (!dockItem) return;
+
+    const rect = dockItem.getBoundingClientRect();
+    const width = Math.round(rect.width);
+    const height = winbox.header || 'auto';
+    const x = Math.round(rect.left);
+    const y = Math.round(rect.top + (rect.height - height) / 2) - 13;
+
+    winbox.dom.classList.add('dock-minimized');
+    winbox.resize(width, height, true).move(x, y, true);
+}
+
+function refreshDockMinimizedWindows() {
+    dockMinimizedWindows.forEach(({ winbox, appName }, key) => {
+        if (!winbox?.dom || !winbox.min) {
+            dockMinimizedWindows.delete(key);
+            return;
+        }
+
+        placeMinimizedInDock(winbox, appName);
+    });
+}
+
+function scheduleDockMinimizedRefresh() {
+    if (dockMinimizedRaf) cancelAnimationFrame(dockMinimizedRaf);
+    dockMinimizedRaf = requestAnimationFrame(() => {
+        dockMinimizedRaf = requestAnimationFrame(() => {
+            dockMinimizedRaf = 0;
+            refreshDockMinimizedWindows();
+        });
+    });
+}
+
+function registerDockMinimized(key, winbox, appName) {
+    dockMinimizedWindows.set(key, { winbox, appName });
+    scheduleDockMinimizedRefresh();
+}
+
+function unregisterDockMinimized(key, winbox) {
+    dockMinimizedWindows.delete(key);
+    winbox?.dom?.classList.remove('dock-minimized');
+    scheduleDockMinimizedRefresh();
+}
+</script>
+
 <script setup>
 import WinBox from 'winbox';
 import 'winbox/dist/css/winbox.min.css';
@@ -10,11 +63,12 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['move', 'resize', 'close', 'focus', 'blur']);
+const emit = defineEmits(['created', 'move', 'resize', 'close', 'focus', 'blur']);
 
 const instance = shallowRef(null);
 const ready = ref(false);
 const isClosing = ref(false);
+const dockMinimizedKey = computed(() => props.options?.id || props.options?.appName);
 
 const teleportTarget = computed(() => {
     const id = props.options?.id;
@@ -24,8 +78,18 @@ const teleportTarget = computed(() => {
 async function init() {
     if (instance.value) return;
 
-    const { onmove, onresize, onclose, onfocus, onblur, launchOrigin, appName, ...rest } =
-        props.options;
+    const {
+        onmove,
+        onresize,
+        onclose,
+        onfocus,
+        onblur,
+        onminimize,
+        onrestore,
+        launchOrigin,
+        appName,
+        ...rest
+    } = props.options;
 
     instance.value = new WinBox({
         ...rest,
@@ -42,6 +106,7 @@ async function init() {
             if (isClosing.value) return true;
 
             isClosing.value = true;
+            unregisterDockMinimized(dockMinimizedKey.value, instance.value);
             const origin = getDockOrigin(appName);
 
             playWindowClose(instance.value.dom, origin).then(() => {
@@ -62,7 +127,16 @@ async function init() {
             onblur?.();
             emit('blur');
         },
+        onminimize() {
+            registerDockMinimized(dockMinimizedKey.value, instance.value, appName);
+            onminimize?.();
+        },
+        onrestore() {
+            unregisterDockMinimized(dockMinimizedKey.value, instance.value);
+            onrestore?.();
+        },
     });
+    emit('created', instance.value);
 
     await nextTick();
 
@@ -77,6 +151,7 @@ onMounted(init);
 
 onBeforeUnmount(() => {
     if (!instance.value) return;
+    unregisterDockMinimized(dockMinimizedKey.value, instance.value);
     instance.value.close(true);
     instance.value = null;
     ready.value = false;

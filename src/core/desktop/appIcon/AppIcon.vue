@@ -25,16 +25,15 @@ function onClick(event) {
         @click="onClick"
     >
         <div class="app_icon">
-            <img v-if="app.meta.icon.includes('http')" :src="app.meta.icon" alt="app icon" />
-            <component v-else :is="app.meta.icon" />
-            <span class="app_icon_title">{{ app.meta.title }}</span>
+            <img :src="app.meta.icon" alt="app icon" />
         </div>
+        <span class="app_icon_title">{{ app.meta.title }}</span>
     </div>
 </template>
 
 <style scoped lang="scss">
 /* 外层：入场动画（forwards 会锁定 transform，不能和 hover 写在同一元素） */
-    .app_icon_wrap {
+.app_icon_wrap {
     flex: 0 0 17.5%;
     width: 17.5%;
     max-width: 60px;
@@ -72,7 +71,7 @@ function onClick(event) {
     .app_icon {
         width: 100%;
         aspect-ratio: 1 / 1;
-        box-sizing: border-box;
+        overflow: hidden;
         border-radius: 15px;
         background: rgba(255, 255, 255, 0.25);
         backdrop-filter: blur(20px) saturate(180%);
@@ -81,7 +80,7 @@ function onClick(event) {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
 
         &:hover {
-            transform: scale(1.02) translateY(-8px);
+            transform: scale(1.008) translateY(-5px);
             box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
             cursor: pointer;
         }
@@ -90,7 +89,6 @@ function onClick(event) {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: inherit;
         }
     }
 }

@@ -5,7 +5,7 @@ export const mockRoutes = [
         component: () => import('@/views/system/user/user.vue'),
         meta: {
             title: '用户管理',
-            icon: 'bi-person',
+            icon: '/logo.png',
         },
     },
     {
@@ -14,7 +14,7 @@ export const mockRoutes = [
         component: () => import('@/views/system/role/role.vue'),
         meta: {
             title: '角色管理',
-            icon: 'bi-person',
+            icon: '/logo.png',
         },
     },
 ];
