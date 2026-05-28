@@ -5,7 +5,7 @@ const CLOSE_DURATION = 420;
 /** 开/关动画全程保持圆角，与桌面图标一致 */
 export const WINDOW_RADIUS = 15;
 const MIN_SCALE = 0.001;
-const MAX_VISUAL_RADIUS_RATIO = 0.15;
+const MAX_VISUAL_RADIUS_RATIO = 0.18;
 
 function originToRect(origin) {
     const w = origin.width ?? 56;
@@ -168,7 +168,7 @@ export function playWindowClose(dom, origin) {
                 }ms ease`;
 
                 const endScale = applyTransformBetween(dom, toRect, fromRect);
-                dom.style.opacity = '0.4';
+                dom.style.opacity = '0.6';
                 applyAnimClip(dom, radius, endScale.scaleX, endScale.scaleY);
 
                 await waitTransition(dom);

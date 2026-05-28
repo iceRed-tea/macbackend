@@ -2,19 +2,30 @@
 import Background from './wegits/Background.vue';
 import Dock from './dock/Dock.vue';
 import DeskTop from './desktop/DeskTop.vue';
+import Search from './search/Search.vue';
 import useAppStore from '@/store/useAppStore';
+
 const { windowSize } = storeToRefs(useAppStore());
 
-const isMobile = computed(() => windowSize.value.width < 800);
+const padding = computed(() => {
+    if (windowSize.value.width >= 600 && windowSize.value.width < 800) {
+        return '10% 15%';
+    } else if (windowSize.value.width < 600) {
+        return '10%';
+    }
+
+    return '5% 20%';
+});
 </script>
 
 <template>
     <div class="os_page">
         <Background />
-        <DeskTop />
-        <template v-if="!isMobile">
+        <div class="w-full h-full column" :style="{ padding: padding }">
+            <Search />
+            <DeskTop />
             <Dock />
-        </template>
+        </div>
     </div>
 </template>
 

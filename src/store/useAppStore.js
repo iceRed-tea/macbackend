@@ -16,6 +16,9 @@ const useAppStore = defineStore(
                 blur: 0,
                 brightness: 1,
             },
+            window: {
+                style: 'mac', //mac / win
+            },
         });
         // 窗口列表
         const windows = ref([]);

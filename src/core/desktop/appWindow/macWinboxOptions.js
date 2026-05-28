@@ -1,5 +1,5 @@
 /** macOS 风格 WinBox 模板：交通灯在左侧，标题居中 */
-function createMacTemplate() {
+function createMacTemplate(icon) {
     const root = document.createElement('div');
     root.innerHTML = `
         <div class="wb-header">
@@ -15,7 +15,9 @@ function createMacTemplate() {
                 </div>
             </div>
             <div class="wb-drag">
-                <div class="wb-icon"></div>
+                <div class="wb-icon">
+                    <img src="${icon}" alt="icon" />
+                </div>
                 <div class="wb-title"></div>
             </div>
         </div>
@@ -50,7 +52,7 @@ export function buildMacWinboxOptions(win) {
         launchOrigin: win.launchOrigin,
         icon: user.icon ?? win.icon,
         class: mergeClass('macos', 'no-full', user.class),
-        template: user.template ?? createMacTemplate(),
+        template: user.template ?? createMacTemplate(win.icon),
         background: user.background ?? 'transparent',
         overflow: true,
         minwidth: 320,

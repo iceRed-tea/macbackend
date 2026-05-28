@@ -23,7 +23,7 @@
 .winbox{
     border-radius: 15px;
     overflow: hidden;
-    transition: width 0.25s, height 0.25s, left 0.25s, top 0.25s;
+    transition: width 0.28s, height 0.28s, left 0.28s, top 0.28s;
     .wb-body{
         border-radius: 0 0 15px 15px;
     }
@@ -95,18 +95,19 @@
 
 .winbox.dock-minimized {
     z-index: 10 !important;
-    border-radius: 15px;
     overflow: hidden;
     aspect-ratio: 1/1 !important;
     height: auto !important;
     box-shadow: none;
+    border-radius: none;
+    border-radius: 12px !important;
+    background: #c3cddb;
 
     .wb-header {
         height: 100%;
-        border-radius: 15px;
+        border-radius: 12px !important;
         padding: 0;
-        background: rgba(255, 255, 255, 0.18);
-        backdrop-filter: blur(18px) saturate(170%);
+        background: #c3cddb;
         border: 1px solid rgba(255, 255, 255, 0.25);
        
         .wb-control{
@@ -121,9 +122,14 @@
                 display: block !important;
                 width: 100%;
                 height: 100%;
+                background: none;
                 margin: 0;
-                background-size: cover;
-                border-radius: 15px;
+                img{
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                
                 &:hover {
                     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
                     cursor: pointer !important;
@@ -134,6 +140,9 @@
 
     .wb-title {
         opacity: 0;
+    }
+    .wb-body{
+        background: #c3cddb;
     }
   
    

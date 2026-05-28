@@ -6,6 +6,7 @@ import '@/assets/style/el-plus.scss';
 import quasar from '@/boot/quasar.config';
 import router from './router';
 import { createPinia } from 'pinia';
+import 'virtual:uno.css';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 const app = createApp(App);

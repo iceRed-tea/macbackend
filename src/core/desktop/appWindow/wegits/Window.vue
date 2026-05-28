@@ -12,7 +12,9 @@ function placeMinimizedInDock(winbox, appName) {
     const width = Math.round(rect.width);
     const height = winbox.header || 'auto';
     const x = Math.round(rect.left);
-    const y = Math.round(rect.top + (rect.height - height) / 2) - 13;
+    console.log(x);
+
+    const y = Math.round(rect.top + (rect.height - height) / 2) - 8;
 
     winbox.dom.classList.add('dock-minimized');
     winbox.resize(width, height, true).move(x, y, true);
@@ -63,7 +65,16 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['created', 'move', 'resize', 'close', 'focus', 'blur']);
+const emit = defineEmits([
+    'created',
+    'move',
+    'resize',
+    'close',
+    'focus',
+    'blur',
+    'minimize',
+    'restore',
+]);
 
 const instance = shallowRef(null);
 const ready = ref(false);
@@ -130,10 +141,20 @@ async function init() {
         onminimize() {
             registerDockMinimized(dockMinimizedKey.value, instance.value, appName);
             onminimize?.();
+            // 动画完了直接把样式改为 optic :0
+            nextTick(() => {
+                setTimeout(() => {
+                    instance.value.dom.style.opacity = '0';
+                }, 500);
+            });
+            emit('minimize');
         },
         onrestore() {
+            instance.value.dom.style.opacity = '1';
             unregisterDockMinimized(dockMinimizedKey.value, instance.value);
             onrestore?.();
+
+            emit('restore');
         },
     });
     emit('created', instance.value);

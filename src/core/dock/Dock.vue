@@ -10,7 +10,7 @@ function onDockItemClick(win) {
     if (instance.min) {
         instance.restore().focus();
     } else {
-        instance.focus();
+        instance.minimize();
     }
 }
 </script>
@@ -19,7 +19,7 @@ function onDockItemClick(win) {
     <div class="dock">
         <div
             class="dock-item"
-            :class="{ 'is-active': win.focused }"
+            :class="{ 'is-active': win.focused && !win.minimized }"
             v-for="win in windows"
             :key="win.id"
             :data-app-name="win.appName"
@@ -36,7 +36,7 @@ function onDockItemClick(win) {
 .dock {
     position: absolute;
     left: 50%;
-    bottom: 3rem;
+    bottom: 2.5rem;
     min-width: 300px;
     transform: translate(-50%, 10rem);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -49,12 +49,12 @@ function onDockItemClick(win) {
     align-items: center;
     gap: 10px;
     padding: 12px;
-    min-height: 84px;
+    min-height: 74px;
 
     .dock-item {
-        width: 60px;
-        height: 60px;
-        max-width: 60px;
+        width: 50px;
+        height: 50px;
+        max-width: 50px;
         align-self: flex-start;
         animation: dock-item-animation 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         will-change: transform, opacity;
@@ -63,7 +63,7 @@ function onDockItemClick(win) {
         -webkit-backdrop-filter: blur(18px) saturate(170%);
         border: 1px solid rgba(255, 255, 255, 0.25);
         box-shadow: 0 8px 32px rgba(31, 38, 135, 0.25), inset 0 4px 20px rgba(255, 255, 255, 0.35);
-        border-radius: 15px;
+        border-radius: 12px;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         position: relative;
         cursor: pointer;

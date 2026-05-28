@@ -27,6 +27,14 @@ function onWindowFocus(win) {
     });
 }
 
+function onWindowMinimize(win) {
+    win.minimized = true;
+}
+
+function onWindowRestore(win) {
+    win.minimized = false;
+}
+
 function onWindowClose(id) {
     removeWindowById(id);
 }
@@ -39,6 +47,8 @@ function onWindowClose(id) {
         :options="getOptions(win)"
         @created="onWindowCreated(win, $event)"
         @focus="onWindowFocus(win)"
+        @minimize="onWindowMinimize(win)"
+        @restore="onWindowRestore(win)"
         @close="onWindowClose(win.id)"
     >
         <component :is="win.component" :window-data="win.data" />
