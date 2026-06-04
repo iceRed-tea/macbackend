@@ -1,7 +1,7 @@
 <script setup>
-import useAppStore from '@/store/useAppStore';
+import useWinStore from '@/core/store/useWinStore';
 
-const { windows } = storeToRefs(useAppStore());
+const { windows } = storeToRefs(useWinStore());
 
 function onDockItemClick(win) {
     const instance = win.instance;
@@ -22,11 +22,11 @@ function onDockItemClick(win) {
             :class="{ 'is-active': win.focused && !win.minimized }"
             v-for="win in windows"
             :key="win.id"
-            :data-app-name="win.appName"
+            :data-app-name="win.name"
             @click="onDockItemClick(win)"
-            :title="win.title"
+            :title="win.meta?.title"
         >
-            <img :src="win.icon" alt="app icon" />
+            <img :src="win.meta.icon" alt="app icon" />
             <span class="dock-item-indicator" />
         </div>
     </div>
@@ -54,6 +54,7 @@ function onDockItemClick(win) {
     .dock-item {
         width: 50px;
         height: 50px;
+        padding: 3px;
         max-width: 50px;
         align-self: flex-start;
         animation: dock-item-animation 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;

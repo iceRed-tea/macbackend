@@ -1,18 +1,27 @@
 <script setup>
 import AppIcon from './appIcon/AppIcon.vue';
 import AppWindow from './appWindow/AppWindow.vue';
-import useAppStore from '@/store/useAppStore';
+import useWinStore from '@/core/store/useWinStore';
 import { mockRoutes } from '@/router/mockroutes';
-import { ElMessage } from 'element-plus';
 
-const { windowSize, windows } = storeToRefs(useAppStore());
-const MAX_WINDOWS = 8;
+const { windows, pages } = storeToRefs(useWinStore());
 
 const appList = ref(mockRoutes);
 
-function findWindowByAppName(name) {
-    return windows.value.find(win => win.appName === name);
+function initPages(list) {
+    list.forEach(item => {
+        const page = item;
+        if (page.children && page.children.length > 0) {
+            page.children = initPages(page.children);
+        }
+        delete page.children;
+        pages.value.push({
+            ...page,
+        });
+    });
 }
+
+initPages(mockRoutes);
 
 function getLaunchOrigin(event) {
     const el = event?.currentTarget?.querySelector?.('.app_icon') ?? event?.currentTarget;
@@ -30,17 +39,15 @@ function getLaunchOrigin(event) {
 
 function createWindowByApp(app, launchOrigin) {
     windows.value.push({
+        ...app,
+        ...app.meta,
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        appName: app.name,
-        title: app.meta?.title || app.name,
-        icon: app.meta?.icon,
         focused: false,
         minimized: false,
         launchOrigin,
-        component: markRaw(defineAsyncComponent(app.component)),
+        component: app.component ? markRaw(defineAsyncComponent(app.component)) : null,
         options: {
-            title: app.meta?.title || app.name,
-            icon: app.meta?.icon,
+            ...app.meta,
             width: '70%',
             height: '70%',
             x: 'center',
@@ -50,20 +57,8 @@ function createWindowByApp(app, launchOrigin) {
 }
 
 function openAppWindow(app, event) {
-    if (!app?.component) return;
-
-    const exists = findWindowByAppName(app.name);
-    if (exists) {
-        ElMessage.info(`"${app.meta?.title || app.name}" 已打开`);
-        return;
-    }
-
-    if (windows.value.length >= MAX_WINDOWS) {
-        ElMessage.warning(`最多同时打开 ${MAX_WINDOWS} 个窗口`);
-        return;
-    }
-
     createWindowByApp(app, getLaunchOrigin(event));
+    console.log(windows.value);
 }
 
 function onAppOpen(app, event) {

@@ -1,6 +1,6 @@
 <script setup>
-import useAppStore from '@/store/useAppStore';
-const { config } = storeToRefs(useAppStore());
+import useWinStore from '@/core/store/useWinStore';
+const { config } = storeToRefs(useWinStore());
 </script>
 
 <template>

@@ -71,6 +71,7 @@ function onClick(event) {
     .app_icon {
         width: 100%;
         aspect-ratio: 1 / 1;
+        padding: 10%;
         overflow: hidden;
         border-radius: 15px;
         background: rgba(255, 255, 255, 0.25);

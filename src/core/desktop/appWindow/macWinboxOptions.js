@@ -19,6 +19,7 @@ function createMacTemplate(icon) {
                     <img src="${icon}" alt="icon" />
                 </div>
                 <div class="wb-title"></div>
+                <div class="wb-header-slot"></div>
             </div>
         </div>
         <div class="wb-body"></div>
@@ -44,16 +45,17 @@ function mergeClass(...values) {
 
 /** 合并 macOS 窗口样式与用户 options，仅负责 header / 缩放区域外观 */
 export function buildMacWinboxOptions(win) {
-    const user = win.options || {};
+    const opt = win.options || {};
+    const icon = win.meta?.icon ?? '/logo.png';
     return {
-        ...user,
-        id: user.id ?? `app-win-${win.id}`,
-        appName: win.appName,
+        ...opt,
+        id: opt.id ?? `app-win-${win.id}`,
+        name: win.name,
         launchOrigin: win.launchOrigin,
-        icon: user.icon ?? win.icon,
-        class: mergeClass('macos', 'no-full', user.class),
-        template: user.template ?? createMacTemplate(win.icon),
-        background: user.background ?? 'transparent',
+        icon: icon,
+        class: mergeClass('macos', 'no-full', opt.class),
+        template: opt.template ?? createMacTemplate(icon),
+        background: opt.background ?? 'transparent',
         overflow: true,
         minwidth: 320,
         minheight: 240,

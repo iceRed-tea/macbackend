@@ -1,15 +1,14 @@
 <script setup>
-import Window from './wegits/Window.vue';
+import AppWindowItem from './AppWindowItem.vue';
 import './winbox-os.scss';
 import { buildMacWinboxOptions } from './macWinboxOptions';
-import useAppStore from '@/store/useAppStore';
+import useWinStore from '@/core/store/useWinStore';
 
-const { windows } = storeToRefs(useAppStore());
+const { windows } = storeToRefs(useWinStore());
 
 function removeWindowById(id) {
     const index = windows.value.findIndex(w => w.id === id);
     if (index === -1) return;
-
     windows.value.splice(index, 1);
 }
 
@@ -41,16 +40,15 @@ function onWindowClose(id) {
 </script>
 
 <template>
-    <Window
+    <AppWindowItem
         v-for="win in windows"
         :key="win.id"
+        :win="win"
         :options="getOptions(win)"
         @created="onWindowCreated(win, $event)"
         @focus="onWindowFocus(win)"
         @minimize="onWindowMinimize(win)"
         @restore="onWindowRestore(win)"
         @close="onWindowClose(win.id)"
-    >
-        <component :is="win.component" :window-data="win.data" />
-    </Window>
+    />
 </template>

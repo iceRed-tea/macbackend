@@ -2,10 +2,10 @@
 const dockMinimizedWindows = new Map();
 let dockMinimizedRaf = 0;
 
-function placeMinimizedInDock(winbox, appName) {
-    if (!winbox?.dom || !appName || !winbox.min) return;
+function placeMinimizedInDock(winbox, name) {
+    if (!winbox?.dom || !name || !winbox.min) return;
 
-    const dockItem = document.querySelector(`.dock-item[data-app-name="${CSS.escape(appName)}"]`);
+    const dockItem = document.querySelector(`.dock-item[data-app-name="${CSS.escape(name)}"]`);
     if (!dockItem) return;
 
     const rect = dockItem.getBoundingClientRect();
@@ -21,13 +21,13 @@ function placeMinimizedInDock(winbox, appName) {
 }
 
 function refreshDockMinimizedWindows() {
-    dockMinimizedWindows.forEach(({ winbox, appName }, key) => {
+    dockMinimizedWindows.forEach(({ winbox, name }, key) => {
         if (!winbox?.dom || !winbox.min) {
             dockMinimizedWindows.delete(key);
             return;
         }
 
-        placeMinimizedInDock(winbox, appName);
+        placeMinimizedInDock(winbox, name);
     });
 }
 
@@ -41,8 +41,8 @@ function scheduleDockMinimizedRefresh() {
     });
 }
 
-function registerDockMinimized(key, winbox, appName) {
-    dockMinimizedWindows.set(key, { winbox, appName });
+function registerDockMinimized(key, winbox, name) {
+    dockMinimizedWindows.set(key, { winbox, name });
     scheduleDockMinimizedRefresh();
 }
 
@@ -79,11 +79,16 @@ const emit = defineEmits([
 const instance = shallowRef(null);
 const ready = ref(false);
 const isClosing = ref(false);
-const dockMinimizedKey = computed(() => props.options?.id || props.options?.appName);
+const dockMinimizedKey = computed(() => props.options?.id || props.options?.name);
 
 const teleportTarget = computed(() => {
     const id = props.options?.id;
     return id ? `#${CSS.escape(id)} .wb-body` : null;
+});
+
+const headerTeleportTarget = computed(() => {
+    const id = props.options?.id;
+    return id ? `#${CSS.escape(id)} .wb-header-slot` : null;
 });
 
 async function init() {
@@ -98,7 +103,7 @@ async function init() {
         onminimize,
         onrestore,
         launchOrigin,
-        appName,
+        name,
         ...rest
     } = props.options;
 
@@ -118,7 +123,7 @@ async function init() {
 
             isClosing.value = true;
             unregisterDockMinimized(dockMinimizedKey.value, instance.value);
-            const origin = getDockOrigin(appName);
+            const origin = getDockOrigin(name);
 
             playWindowClose(instance.value.dom, origin).then(() => {
                 onclose?.();
@@ -139,21 +144,13 @@ async function init() {
             emit('blur');
         },
         onminimize() {
-            registerDockMinimized(dockMinimizedKey.value, instance.value, appName);
+            registerDockMinimized(dockMinimizedKey.value, instance.value, name);
             onminimize?.();
-            // 动画完了直接把样式改为 optic :0
-            nextTick(() => {
-                setTimeout(() => {
-                    instance.value.dom.style.opacity = '0';
-                }, 500);
-            });
             emit('minimize');
         },
         onrestore() {
-            instance.value.dom.style.opacity = '1';
             unregisterDockMinimized(dockMinimizedKey.value, instance.value);
             onrestore?.();
-
             emit('restore');
         },
     });
@@ -185,6 +182,9 @@ defineExpose({
 </script>
 
 <template>
+    <Teleport v-if="ready && headerTeleportTarget" :to="headerTeleportTarget">
+        <slot name="header" />
+    </Teleport>
     <Teleport v-if="ready && teleportTarget" :to="teleportTarget">
         <div class="winbox-window-content">
             <slot />

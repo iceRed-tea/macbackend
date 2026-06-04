@@ -3,6 +3,7 @@ import Background from './wegits/Background.vue';
 import Dock from './dock/Dock.vue';
 import DeskTop from './desktop/DeskTop.vue';
 import Search from './search/Search.vue';
+import Sidebar from './sidebar/Sidebar.vue';
 import useAppStore from '@/store/useAppStore';
 
 const { windowSize } = storeToRefs(useAppStore());
@@ -16,11 +17,14 @@ const padding = computed(() => {
 
     return '5% 20%';
 });
+
+const isMobile = computed(() => windowSize.value.width < 800);
 </script>
 
 <template>
     <div class="os_page">
         <Background />
+        <Sidebar v-if="!isMobile" />
         <div class="w-full h-full column" :style="{ padding: padding }">
             <Search />
             <DeskTop />
