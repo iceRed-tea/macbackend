@@ -1,5 +1,5 @@
 <script setup>
-import Window from './wegits/Window.vue';
+import Window from './Window.vue';
 import useWinStore from '@/core/store/useWinStore';
 
 const { pages } = storeToRefs(useWinStore());
@@ -8,8 +8,6 @@ const props = defineProps({
     win: Object,
     options: Object,
 });
-
-const emit = defineEmits(['created', 'focus', 'minimize', 'restore', 'close']);
 
 const PAGE_ANIM_MS = 320;
 let pageUid = 0;
@@ -80,11 +78,59 @@ const pageStack = ref([createRootEntry()]);
 const forwardStack = ref([]);
 const leavingId = ref(null);
 const enteringId = ref(null);
+const winboxInstance = shallowRef(null);
+const listenerMap = new Map();
+
+function onWinbox(event, payload) {
+    if (event === 'created') {
+        winboxInstance.value = markRaw(payload);
+    }
+
+    listenerMap.get(event)?.forEach(fn => fn(payload));
+}
+
+function on(event, callback) {
+    if (typeof callback !== 'function') return () => {};
+
+    if (!listenerMap.has(event)) {
+        listenerMap.set(event, new Set());
+    }
+    listenerMap.get(event).add(callback);
+
+    if (event === 'created' && winboxInstance.value) {
+        callback(winboxInstance.value);
+    }
+
+    return () => listenerMap.get(event)?.delete(callback);
+}
+
+function createWinboxListener(event) {
+    return callback => on(event, callback);
+}
+
+const created = createWinboxListener('created');
+const focus = createWinboxListener('focus');
+const blur = createWinboxListener('blur');
+const minimize = createWinboxListener('minimize');
+const restore = createWinboxListener('restore');
+const close = createWinboxListener('close');
+const move = createWinboxListener('move');
+const resize = createWinboxListener('resize');
+
+onBeforeUnmount(() => {
+    listenerMap.clear();
+});
 
 const currentPage = computed(() => pageStack.value[pageStack.value.length - 1]);
 const canGoBack = computed(() => pageStack.value.length > 1);
 const canGoForward = computed(() => forwardStack.value.length > 0);
 const showNavButtons = computed(() => canGoBack.value || canGoForward.value);
+const title = computed(() => {
+    if (currentPage.value?.title !== props.win.title) {
+        return ` / ${currentPage.value?.title}`;
+    }
+    return '';
+});
 
 function waitPageAnim() {
     return new Promise(resolve => setTimeout(resolve, PAGE_ANIM_MS));
@@ -160,28 +206,40 @@ function reloadCurrent() {
     };
 }
 
-provide('windowNav', {
+provide('useAppWin', {
     navigate,
     goBack,
     goForward,
     reload: reloadCurrent,
     canGoBack,
     canGoForward,
+    instance: readonly(winboxInstance),
+    created,
+    focus,
+    blur,
+    minimize,
+    restore,
+    close,
+    move,
+    resize,
 });
 </script>
 
 <template>
     <Window
         :options="options"
-        @created="emit('created', $event)"
-        @focus="emit('focus')"
-        @minimize="emit('minimize')"
-        @restore="emit('restore')"
-        @close="emit('close')"
+        @created="e => onWinbox('created', e)"
+        @focus="e => onWinbox('focus', e)"
+        @blur="e => onWinbox('blur', e)"
+        @minimize="e => onWinbox('minimize', e)"
+        @restore="e => onWinbox('restore', e)"
+        @close="e => onWinbox('close', e)"
+        @move="e => onWinbox('move', e)"
+        @resize="e => onWinbox('resize', e)"
     >
         <template #header>
             <div class="app-win-nav-bar">
-                <div class="right_btns">
+                <div class="right_btns" @click.stop>
                     <div v-if="showNavButtons" class="row">
                         <q-btn
                             icon="chevron_left"
@@ -206,6 +264,8 @@ provide('windowNav', {
                 </div>
             </div>
         </template>
+
+        <template #title>{{ title }}</template>
 
         <div v-if="currentPage?.component" class="app-win-wrapper">
             <div class="app-win-page-wrap">

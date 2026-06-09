@@ -12,8 +12,6 @@ function placeMinimizedInDock(winbox, name) {
     const width = Math.round(rect.width);
     const height = winbox.header || 'auto';
     const x = Math.round(rect.left);
-    console.log(x);
-
     const y = Math.round(rect.top + (rect.height - height) / 2) - 8;
 
     winbox.dom.classList.add('dock-minimized');
@@ -89,6 +87,11 @@ const teleportTarget = computed(() => {
 const headerTeleportTarget = computed(() => {
     const id = props.options?.id;
     return id ? `#${CSS.escape(id)} .wb-header-slot` : null;
+});
+
+const titleTeleportTarget = computed(() => {
+    const id = props.options?.id;
+    return id ? `#${CSS.escape(id)} .wb-title` : null;
 });
 
 async function init() {
@@ -189,6 +192,9 @@ defineExpose({
         <div class="winbox-window-content">
             <slot />
         </div>
+    </Teleport>
+    <Teleport v-if="ready && titleTeleportTarget" :to="titleTeleportTarget">
+        <slot name="title" />
     </Teleport>
 </template>
 

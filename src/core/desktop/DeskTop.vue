@@ -56,13 +56,8 @@ function createWindowByApp(app, launchOrigin) {
     });
 }
 
-function openAppWindow(app, event) {
-    createWindowByApp(app, getLaunchOrigin(event));
-    console.log(windows.value);
-}
-
 function onAppOpen(app, event) {
-    openAppWindow(app, event);
+    createWindowByApp(app, getLaunchOrigin(event));
 }
 </script>
 

@@ -1,7 +1,7 @@
 <script setup>
-import AppWindowItem from './AppWindowItem.vue';
+import AppWindowItem from './wegits/AppWindowItem.vue';
 import './winbox-os.scss';
-import { buildMacWinboxOptions } from './macWinboxOptions';
+import { buildMacWinboxOptions } from './utils/macWinboxOptions.js';
 import useWinStore from '@/core/store/useWinStore';
 
 const { windows } = storeToRefs(useWinStore());
